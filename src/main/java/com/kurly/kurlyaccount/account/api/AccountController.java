@@ -5,6 +5,7 @@ import com.kurly.kurlyaccount.account.dto.AuthenticationToken;
 import com.kurly.kurlyaccount.account.service.AccountService;
 import com.kurly.kurlyaccount.exception.ExceptionCode;
 import com.kurly.kurlyaccount.exception.response.ExceptionResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -21,6 +22,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @RequestMapping("/")
 @Slf4j
+@Tag(name = "Account API", description = "Authentication 관련 API 제공")
 public class AccountController {
 
     private final AccountService accountService;
