@@ -1,6 +1,7 @@
 package com.kurly.kurlyaccount.account.api;
 
-import com.kurly.kurlyaccount.account.dto.AuthenticationRequest;
+import com.kurly.kurlyaccount.account.dto.LoginRequest;
+import com.kurly.kurlyaccount.account.dto.SignUpRequest;
 import com.kurly.kurlyaccount.account.dto.AuthenticationToken;
 import com.kurly.kurlyaccount.account.service.AccountService;
 import com.kurly.kurlyaccount.exception.ExceptionCode;
@@ -8,7 +9,6 @@ import com.kurly.kurlyaccount.exception.response.ExceptionResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,18 +20,19 @@ import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("/member")
 @Slf4j
 @Tag(name = "Account API", description = "Authentication 관련 API 제공")
 public class AccountController {
 
     private final AccountService accountService;
 
-    @PostMapping("/sign-up")
-    public ResponseEntity<?> signUp(@RequestBody @Validated AuthenticationRequest authenticationRequest,
-                         HttpServletRequest httpServletRequest) {
-
-        AuthenticationToken token = accountService.signUp(authenticationRequest);
+    @PostMapping("/signup")
+    public ResponseEntity<?> signUp(
+            @RequestBody @Validated SignUpRequest signUpRequest,
+            HttpServletRequest httpServletRequest
+    ) {
+        AuthenticationToken token = accountService.signUp(signUpRequest);
 
         HttpSession httpSession = httpServletRequest.getSession(true);
         httpSession.setAttribute("account-token", token);
@@ -39,11 +40,12 @@ public class AccountController {
         return ResponseEntity.ok(token);
     }
 
-    @PostMapping("/sign-in")
-    public ResponseEntity<?> signIn(@RequestBody @Valid AuthenticationRequest authenticationRequest,
-                         HttpServletRequest httpServletRequest) {
-
-        AuthenticationToken token = accountService.signIn(authenticationRequest);
+    @PostMapping("/login")
+    public ResponseEntity<?> login(
+            @RequestBody @Validated LoginRequest loginRequest,
+            HttpServletRequest httpServletRequest
+    ) {
+        AuthenticationToken token = accountService.signIn(loginRequest);
 
         HttpSession httpSession = httpServletRequest.getSession(true);
         httpSession.setAttribute("account-token", token);

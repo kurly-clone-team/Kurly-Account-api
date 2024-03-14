@@ -9,11 +9,15 @@ import lombok.Getter;
 public class AuthenticationToken {
 
     private String sessionId;
+    private String userId;
     private String name;
+    private String address;
 
     public static AuthenticationToken of(Account account) {
         return AuthenticationToken.builder()
+                .userId(account.getUserId())
                 .name(account.getName())
+                .address(account.getAddress())
                 .build();
     }
 
