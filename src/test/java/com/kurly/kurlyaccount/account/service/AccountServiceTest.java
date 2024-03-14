@@ -1,6 +1,7 @@
 package com.kurly.kurlyaccount.account.service;
 
-import com.kurly.kurlyaccount.account.dto.AuthenticationRequest;
+import com.kurly.kurlyaccount.account.dto.LoginRequest;
+import com.kurly.kurlyaccount.account.dto.SignUpRequest;
 import com.kurly.kurlyaccount.account.repository.AccountRepository;
 import com.kurly.kurlyaccount.exception.AccountCustomException;
 import com.kurly.kurlyaccount.exception.ExceptionCode;
@@ -20,8 +21,10 @@ class AccountServiceTest {
     @Autowired
     AccountRepository accountRepository;
 
+    private static final String USERID = "user-id";
     private static final String NAME = "user-name";
     private static final String PASSWORD = "user-password";
+    private static final String ADDRESS = "user-address";
 
     @AfterEach
     void afterEach() {
@@ -29,23 +32,25 @@ class AccountServiceTest {
     }
 
     @Test
-    void 이름_중복_검사 () {
-        AuthenticationRequest request = AuthenticationRequest.builder()
-                .name(NAME)
+    void 유저아이디_중복_검사 () {
+        SignUpRequest request = SignUpRequest.builder()
+                .userId(USERID)
                 .password(PASSWORD)
+                .name(NAME)
+                .address(ADDRESS)
                 .build();
 
         accountService.signUp(request);
         ExceptionCode code = assertThrows(AccountCustomException.class,
                 () -> accountService.signUp(request)).getExceptionCode();
 
-        assertEquals(ExceptionCode.IN_USE_NAME, code);
+        assertEquals(ExceptionCode.IN_USE_USER_ID, code);
     }
 
     @Test
-    void 로그인_이아디_검증 () {
-        AuthenticationRequest request = AuthenticationRequest.builder()
-                .name(NAME)
+    void 로그인_이아디_검증1 () {
+        LoginRequest request = LoginRequest.builder()
+                .userId(USERID)
                 .password(PASSWORD)
                 .build();
 
@@ -56,16 +61,40 @@ class AccountServiceTest {
     }
 
     @Test
-    void 로그인_비밀번호_검증() {
-        AuthenticationRequest request = AuthenticationRequest.builder()
-                .name(NAME)
+    void 로그인_이아디_검증2 () {
+        SignUpRequest signUpRequest = SignUpRequest.builder()
+                .userId(USERID)
                 .password(PASSWORD)
+                .name(NAME)
+                .address(ADDRESS)
+                .build();
+
+        accountService.signUp(signUpRequest);
+
+        LoginRequest loginRequest = LoginRequest.builder()
+                .userId(USERID + "123")
+                .password(PASSWORD)
+                .build();
+
+        ExceptionCode code = assertThrows(AccountCustomException.class,
+                () -> accountService.signIn(loginRequest)).getExceptionCode();
+
+        assertEquals(ExceptionCode.NOT_FOUND_ACCOUNT, code);
+    }
+
+    @Test
+    void 로그인_비밀번호_검증() {
+        SignUpRequest request = SignUpRequest.builder()
+                .userId(USERID)
+                .password(PASSWORD)
+                .name(NAME)
+                .address(ADDRESS)
                 .build();
 
         accountService.signUp(request);
 
-        AuthenticationRequest badRequest = AuthenticationRequest.builder()
-                .name(NAME)
+        LoginRequest badRequest = LoginRequest.builder()
+                .userId(USERID)
                 .password(PASSWORD + "123")
                 .build();
 

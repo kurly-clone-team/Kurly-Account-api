@@ -2,7 +2,8 @@ package com.kurly.kurlyaccount.account.service;
 
 
 import com.kurly.kurlyaccount.account.Account;
-import com.kurly.kurlyaccount.account.dto.AuthenticationRequest;
+import com.kurly.kurlyaccount.account.dto.LoginRequest;
+import com.kurly.kurlyaccount.account.dto.SignUpRequest;
 import com.kurly.kurlyaccount.account.dto.AuthenticationToken;
 import com.kurly.kurlyaccount.account.repository.AccountRepository;
 import com.kurly.kurlyaccount.exception.AccountCustomException;
@@ -18,21 +19,21 @@ public class AccountService {
     private final AccountRepository accountRepository;
 
     @Transactional
-    public AuthenticationToken signUp(AuthenticationRequest authenticationRequest) {
-        boolean isExistName = accountRepository.existsByName(authenticationRequest.getName());
-        if(isExistName)
-            throw new AccountCustomException(ExceptionCode.IN_USE_NAME);
+    public AuthenticationToken signUp(SignUpRequest signUpRequest) {
+        boolean isExistUserid = accountRepository.existsByUserId(signUpRequest.getUserId());
+        if(isExistUserid)
+            throw new AccountCustomException(ExceptionCode.IN_USE_USER_ID);
 
-        Account account = Account.of(authenticationRequest);
+        Account account = Account.of(signUpRequest);
         accountRepository.save(account);
         return AuthenticationToken.of(account);
     }
 
-    public AuthenticationToken signIn(AuthenticationRequest authenticationRequest) {
-        Account account = accountRepository.findByName(authenticationRequest.getName())
+    public AuthenticationToken signIn(LoginRequest loginRequest) {
+        Account account = accountRepository.findByUserId(loginRequest.getUserId())
                 .orElseThrow(() -> new AccountCustomException(ExceptionCode.NOT_FOUND_ACCOUNT));
 
-        if(!account.getPassword().equals(authenticationRequest.getPassword()))
+        if(!account.getPassword().equals(loginRequest.getPassword()))
             throw new AccountCustomException(ExceptionCode.NO_MATCHING_PASSWORD);
 
         return AuthenticationToken.of(account);

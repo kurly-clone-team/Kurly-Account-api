@@ -1,6 +1,6 @@
 package com.kurly.kurlyaccount.account;
 
-import com.kurly.kurlyaccount.account.dto.AuthenticationRequest;
+import com.kurly.kurlyaccount.account.dto.SignUpRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,20 +16,22 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", unique = true, nullable = false)
-    private String name;
+    @Column(name = "user_id", unique = true, nullable = false)
+    private String userId;
 
     @Column(nullable = false)
     private String password;
 
-    private Long money;
+    private String name;
 
     private String address;
 
-    public static Account of(AuthenticationRequest authenticationRequest) {
+    public static Account of(SignUpRequest authenticationRequest) {
         return Account.builder()
-                .name(authenticationRequest.getName())
+                .userId(authenticationRequest.getUserId())
                 .password(authenticationRequest.getPassword())
+                .name(authenticationRequest.getName())
+                .address(authenticationRequest.getAddress())
                 .build();
     }
 }

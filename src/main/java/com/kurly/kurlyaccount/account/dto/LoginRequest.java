@@ -6,10 +6,10 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class AuthenticationRequest {
+public class LoginRequest {
 
-    @NotBlank(message = "name 값은 필수입니다.")
-    private String name;
+    @NotBlank(message = "ID 값은 필수입니다.")
+    private String userId;
 
     @NotBlank(message = "password 값은 필수입니다.")
     private String password;
