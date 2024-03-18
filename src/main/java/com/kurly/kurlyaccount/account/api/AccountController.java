@@ -71,4 +71,10 @@ public class AccountController {
                         ExceptionCode.VALIDATION_FAILED.name(),
                         Objects.requireNonNull(e.getFieldError()).getDefaultMessage()));
     }
+
+    @GetMapping("/health-check")
+    public ResponseEntity<?> healthCheck() {
+        log.info("health check...");
+        return ResponseEntity.ok("health check...");
+    }
 }
