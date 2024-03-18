@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "accounts", indexes = @Index(name = "index_name", columnList = "name", unique = true))
+@Table(name = "accounts", indexes = @Index(name = "idx_user_id", columnList = "user_id", unique = true))
 @Getter
 @Builder
 @NoArgsConstructor
@@ -22,8 +22,10 @@ public class Account {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String address;
 
     public static Account of(SignUpRequest authenticationRequest) {
